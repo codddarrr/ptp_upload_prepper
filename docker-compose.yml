@@ -1,0 +1,59 @@
+services:
+  ffmpeg:
+    container_name: ffmpeg
+    entrypoint: ["/init"]
+    image: linuxserver/ffmpeg:latest
+    restart: unless-stopped
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+    volumes:
+      - ${MEDIA_PATH}:${MEDIA_PATH}:ro
+      - ${OUTPUT_PATH}:${OUTPUT_PATH}
+
+  mediainfo:
+    container_name: mediainfo
+    entrypoint: ["/init"]
+    image: jlesage/mediainfo:latest
+    restart: unless-stopped
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+    volumes:
+      - ${MEDIA_PATH}:${MEDIA_PATH}:ro
+
+  mediainfo-dvd:
+    container_name: mediainfo-dvd
+    entrypoint: ["/init"]
+    image: jlesage/mediainfo:v23.06.2
+    restart: unless-stopped
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+    volumes:
+      - ${MEDIA_PATH}:${MEDIA_PATH}:ro
+
+  pngquant:
+    container_name: pngquant
+    build:
+      context: ./docker/pngquant
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+    volumes:
+      - ${OUTPUT_PATH}:${OUTPUT_PATH}
+
+  transmission:
+    container_name: transmission
+    entrypoint: ["/init"]
+    image: linuxserver/transmission:latest
+    restart: unless-stopped
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+    volumes:
+      - ${MEDIA_PATH}:${MEDIA_PATH}:ro
+      - ${OUTPUT_PATH}:${OUTPUT_PATH}
+      - ${TORRENTS_PATH}:${TORRENTS_PATH}
