@@ -881,6 +881,21 @@ def main():
         generate_csv(torrent_directory, csv_path)
         return
 
+    if args.generate_screens:
+        handle_logging('info', "Generating screenshots only.")
+        if not args.files:
+            handle_logging('error', "No files specified for screenshot generation")
+            sys.exit
+        else:
+            for file_path in args.files:
+                handle_logging('info', f"Generating screenshots for {file_path}")
+                file_name = Path(file_path).name
+                file_name = file_name[:file_name.rfind('.')]
+                output_path = Path(args.output_path) if args.output_path else Path.cwd()
+                output_path.mkdir(parents=True, exist_ok=True)
+                generate_thumbnails(file_path, output_path / file_name)
+        sys.exit(1)
+
     if args.csv_path:
         try:
             with open(args.csv_path, 'r', newline='') as csvfile:
